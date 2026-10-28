@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abuzar | AI & Machine Learning Engineer</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Font Awesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Syne & Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            bg: '#050814',
+                            card: 'rgba(13, 19, 38, 0.65)',
+                            border: 'rgba(56, 189, 248, 0.15)',
+                            cyan: '#06b6d4',
+                            blue: '#3b82f6',
+                            purple: '#a855f7',
+                            pink: '#ec4899',
+                            glow: '#00f0ff'
+                        }
+                    },
+                    fontFamily: {
+                        heading: ['Syne', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Styling & Glassmorphism Effects */
+        body {
+            background-color: #050814;
+            color: #f1f5f9;
+            overflow-x: hidden;
+        }
+
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .glass-card {
+            background: rgba(13, 21, 41, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(56, 189, 248, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(6, 182, 212, 0.4);
+            box-shadow: 0 0 25px rgba(6, 182, 212, 0.25);
+        }
+
+        .glass-nav {
+            background: rgba(5, 8, 20, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #00f0ff 0%, #7000ff 50%, #ff007f 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .glow-button {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .glow-button:hover {
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.6);
+            transform: translateY(-2px);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050814;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #06b6d4;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased selection:bg-cyber-cyan selection:text-black">
+
+    <!-- 3D Three.js WebGL Canvas -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Header Navigation -->
+    <header class="fixed top-0 left-0 w-full z-50 glass-nav transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#hero" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyber-cyan via-cyber-blue to-cyber-purple flex items-center justify-center text-white font-heading font-bold text-xl shadow-lg shadow-cyber-cyan/20 group-hover:scale-105 transition-transform">
+                    A
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-heading font-extrabold text-lg tracking-wider text-white">ABUZAR</span>
+                    <span class="text-[10px] font-mono tracking-widest text-cyber-cyan uppercase">AI / ML Engineer</span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center gap-8 font-medium text-sm text-slate-300">
+                <a href="#about" class="hover:text-cyber-cyan transition-colors">About</a>
+                <a href="#skills" class="hover:text-cyber-cyan transition-colors">Skills</a>
+                <a href="#projects" class="hover:text-cyber-cyan transition-colors">Projects</a>
+                <a href="#education" class="hover:text-cyber-cyan transition-colors">Education</a>
+                <a href="#contact" class="hover:text-cyber-cyan transition-colors">Contact</a>
+            </nav>
+
+            <!-- Quick Action CTA -->
+            <div class="hidden sm:flex items-center gap-4">
+                <a href="#contact" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyber-cyan to-cyber-blue text-slate-950 font-bold text-xs uppercase tracking-wider glow-button">
+                    Hire Me
+                </a>
+            </div>
+
+            <!-- Mobile Hamburger Button -->
+            <button id="mobile-menu-btn" class="md:hidden p-2 text-slate-300 hover:text-white focus:outline-none">
+                <i class="fa-solid fa-bars text-2xl" id="menu-icon"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden bg-cyber-bg/95 border-b border-slate-800 px-6 py-6 space-y-4">
+            <a href="#about" class="mobile-link block text-base font-medium text-slate-300 hover:text-cyber-cyan">About</a>
+            <a href="#skills" class="mobile-link block text-base font-medium text-slate-300 hover:text-cyber-cyan">Skills</a>
+            <a href="#projects" class="mobile-link block text-base font-medium text-slate-300 hover:text-cyber-cyan">Projects</a>
+            <a href="#education" class="mobile-link block text-base font-medium text-slate-300 hover:text-cyber-cyan">Education</a>
+            <a href="#contact" class="mobile-link block text-base font-medium text-slate-300 hover:text-cyber-cyan">Contact</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="min-h-screen pt-28 pb-16 flex items-center justify-center relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Left Main Content -->
+                <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border border-cyber-cyan/30 text-cyber-cyan text-xs font-mono tracking-widest uppercase">
+                        <span class="w-2 h-2 rounded-full bg-cyber-cyan animate-pulse"></span>
+                        3D Neural Network Interactive Space
+                    </div>
+
+                    <h1 class="text-4xl sm:text-6xl xl:text-7xl font-heading font-extrabold tracking-tight leading-none">
+                        Hi, I'm <span class="gradient-text">Abuzar</span> <br>
+                        <span class="text-3xl sm:text-5xl text-slate-200">AI / Machine Learning Engineer</span>
+                    </h1>
+
+                    <p class="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 font-light leading-relaxed">
+                        Passionate about supervised learning, data preprocessing, feature engineering, and predictive modeling. Turning complex raw data into practical AI deployment.
+                    </p>
+
+                    <!-- Contact & CTA Buttons -->
+                    <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-4">
+                        <a href="#projects" class="px-8 py-3.5 rounded-xl bg-gradient-to-r from-cyber-cyan via-cyber-blue to-cyber-purple text-slate-950 font-bold text-sm uppercase tracking-wider glow-button flex items-center gap-2">
+                            <span>Explore Projects</span>
+                            <i class="fa-solid fa-arrow-down text-xs"></i>
+                        </a>
+
+                        <button onclick="downloadResume()" class="px-8 py-3.5 rounded-xl glass-card text-white hover:text-cyber-cyan font-bold text-sm uppercase tracking-wider border border-slate-700 hover:border-cyber-cyan transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-download text-cyber-cyan"></i>
+                            <span>Download CV</span>
+                        </button>
+                    </div>
+
+                    <!-- Location & Direct Quick Links -->
+                    <div class="pt-6 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-xs font-mono text-slate-400">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-location-dot text-cyber-cyan"></i>
+                            <span>Muzaffarabad, Pakistan</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-envelope text-cyber-purple"></i>
+                            <a href="mailto:rajaabuzar13@gmail.com" class="hover:text-cyber-cyan transition-colors">rajaabuzar13@gmail.com</a>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-phone text-cyber-blue"></i>
+                            <a href="tel:03111870822" class="hover:text-cyber-cyan transition-colors">0311 1870822</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Visual Profile Avatar & Code Terminal -->
+                <div class="lg:col-span-5 flex flex-col items-center justify-center gap-6">
+                    <!-- Profile Picture Frame with Cyber Glowing Rings -->
+                    <div class="relative group">
+                        <div class="absolute -inset-1 rounded-full bg-gradient-to-r from-cyber-cyan via-cyber-blue to-cyber-purple opacity-75 blur-md group-hover:opacity-100 transition duration-500 group-hover:blur-lg animate-pulse"></div>
+                        <div class="relative w-48 h-48 sm:w-56 sm:h-56 rounded-full overflow-hidden p-1 bg-cyber-bg border border-cyber-cyan/40 shadow-2xl transition-transform duration-500 group-hover:scale-105">
+                            <img src="input_file_0.png" alt="Abuzar - AI Engineer" class="w-full h-full object-cover rounded-full filter grayscale-[10%] group-hover:grayscale-0 transition-all duration-500" onerror="this.onerror=null; this.src='a.jpeg';">
+                        </div>
+                        <div class="absolute bottom-2 right-2 px-3 py-1 bg-cyber-bg/90 border border-cyber-cyan/50 text-cyber-cyan text-[10px] font-mono rounded-full backdrop-blur-md flex items-center gap-1.5 shadow-lg">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                            Online
+                        </div>
+                    </div>
+
+                    <!-- Terminal Card -->
+                    <div class="w-full max-w-md glass-card rounded-2xl p-5 relative overflow-hidden border border-cyber-cyan/30 shadow-2xl">
+                        <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                            <div class="flex space-x-2">
+                                <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+                            </div>
+                            <span class="text-xs font-mono text-slate-500">abuzar_ml_core.py</span>
+                        </div>
+
+                        <div class="pt-3 font-mono text-xs text-slate-300 space-y-2">
+                            <p class="text-slate-500"># Model Training Pipeline</p>
+                            <p><span class="text-cyber-purple">import</span> sklearn</p>
+                            <p><span class="text-cyber-purple">import</span> pandas <span class="text-cyber-purple">as</span> pd</p>
+                            
+                            <div class="pt-1 border-t border-slate-800/60">
+                                <p class="text-cyber-cyan">class <span class="text-white">AIEngineer</span>:</p>
+                                <p class="pl-4">def <span class="text-cyber-blue">__init__</span>(self):</p>
+                                <p class="pl-8">self.name = <span class="text-emerald-400">"Abuzar"</span></p>
+                                <p class="pl-8">self.focus = [<span class="text-emerald-400">"Supervised Learning"</span>, <span class="text-emerald-400">"Feature Eng"</span>]</p>
+                            </div>
+
+                            <div class="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 text-[11px] text-emerald-400 flex items-center justify-between mt-2">
+                                <span><i class="fa-solid fa-check-circle mr-1"></i> Model Status: Active</span>
+                                <span>Acc: 98.4%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-xs font-mono text-cyber-cyan tracking-widest uppercase">Summary & Overview</span>
+                <h2 class="text-3xl sm:text-4xl font-heading font-extrabold text-white mt-2">Architecting Practical AI Solutions</h2>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Summary Card with Small Avatar Header -->
+                <div class="lg:col-span-2 glass-card p-8 rounded-2xl border border-slate-800 space-y-6">
+                    <div class="flex items-center gap-4">
+                        <div class="w-16 h-16 rounded-2xl overflow-hidden border-2 border-cyber-cyan/50 p-0.5 bg-cyber-bg flex-shrink-0">
+                            <img src="input_file_0.png" alt="Abuzar Profile" class="w-full h-full object-cover rounded-xl" onerror="this.onerror=null; this.src='a.jpeg';">
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-heading font-bold text-white">Abuzar</h3>
+                            <p class="text-xs font-mono text-cyber-cyan">AI / Machine Learning Engineer</p>
+                        </div>
+                    </div>
+
+                    <p class="text-slate-300 leading-relaxed font-light">
+                        AI Engineering enthusiast with expertise in supervised learning, data preprocessing, feature engineering, and predictive modeling. Proficient in Python, Scikit-learn, Pandas, and data visualization tools, with a strong focus on practical AI deployment.
+                    </p>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-800/80 text-xs font-mono">
+                        <div>
+                            <span class="text-slate-500 block">Location</span>
+                            <span class="text-white font-medium">Muzaffarabad, PK</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-500 block">Degree</span>
+                            <span class="text-white font-medium">BS CS (2020-2024)</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-500 block">Specialization</span>
+                            <span class="text-white font-medium">AI & ML</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Languages & Core Focus -->
+                <div class="glass-card p-8 rounded-2xl border border-slate-800 flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-cyber-purple/10 border border-cyber-purple/30 text-cyber-purple flex items-center justify-center text-2xl mb-6">
+                            <i class="fa-solid fa-language"></i>
+                        </div>
+                        <h3 class="text-xl font-heading font-bold text-white mb-4">Languages spoken</h3>
+                        <ul class="space-y-4">
+                            <li class="flex justify-between items-center text-sm">
+                                <span class="text-slate-300">Urdu</span>
+                                <span class="px-3 py-1 rounded-full bg-cyber-cyan/10 text-cyber-cyan border border-cyber-cyan/30 text-xs font-mono">Native</span>
+                            </li>
+                            <li class="flex justify-between items-center text-sm">
+                                <span class="text-slate-300">English</span>
+                                <span class="px-3 py-1 rounded-full bg-cyber-purple/10 text-cyber-purple border border-cyber-purple/30 text-xs font-mono">Professional</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-8 pt-6 border-t border-slate-800">
+                        <span class="text-xs font-mono text-slate-400 block mb-2">Core Engineering Values</span>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-2.5 py-1 rounded-lg bg-slate-800/80 text-slate-300 text-xs font-mono">Data Cleansing</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-slate-800/80 text-slate-300 text-xs font-mono">Model Tuning</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-slate-800/80 text-slate-300 text-xs font-mono">KPI Visuals</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Skills Section -->
+    <section id="skills" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-xs font-mono text-cyber-cyan tracking-widest uppercase">Tech Stack & Competencies</span>
+                <h2 class="text-3xl sm:text-4xl font-heading font-extrabold text-white mt-2">Technical Proficiency</h2>
+            </div>
+
+            <!-- Skills Matrix -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <!-- Category 1: Languages & Tools -->
+                <div class="glass-card p-6 rounded-2xl border border-slate-800">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i class="fa-solid fa-code text-cyber-cyan text-xl"></i>
+                        <h3 class="font-heading font-bold text-lg text-white">Languages & Tools</h3>
+                    </div>
+                    <ul class="space-y-3 font-mono text-sm">
+                        <li class="flex items-center justify-between bg-slate-900/50 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-slate-300">Python</span>
+                            <span class="text-cyber-cyan text-xs">Expert</span>
+                        </li>
+                        <li class="flex items-center justify-between bg-slate-900/50 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-slate-300">Jupyter / Colab</span>
+                            <span class="text-cyber-cyan text-xs">Advanced</span>
+                        </li>
+                        <li class="flex items-center justify-between bg-slate-900/50 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-slate-300">Power BI</span>
+                            <span class="text-cyber-cyan text-xs">Advanced</span>
+                        </li>
+                        <li class="flex items-center justify-between bg-slate-900/50 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-slate-300">MS Office</span>
+                            <span class="text-slate-400 text-xs">Proficient</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Category 2: ML & Data -->
+                <div class="glass-card p-6 rounded-2xl border border-slate-800">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i class="fa-solid fa-chart-diagram text-cyber-purple text-xl"></i>
+                        <h3 class="font-heading font-bold text-lg text-white">ML & Data Libs</h3>
+                    </div>
+                    <ul class="space-y-3 font-mono text-sm">
+                        <li class="flex items-center justify-between bg-slate-900/50 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-slate-300">Scikit-learn</span>
+                            <span class="text-cyber-purple text-xs">Core</span>
+                        </li>
+                        <li class="flex items-center justify-between bg-slate-900/50 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-slate-300">Pandas / NumPy</span>
+                            <span class="text-cyber-purple text-xs">Advanced</span>
+                        </li>
+                        <li class="flex items-center justify-between bg-slate-900/50 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-slate-300">Matplotlib</span>
+                            <span class="text-cyber-purple text-xs">Proficient</span>
+                        </li>
+                        <li class="flex items-center justify-between bg-slate-900/50 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-slate-300">Seaborn</span>
+                            <span class="text-cyber-purple text-xs">Proficient</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Category 3: Core Skills -->
+                <div class="glass-card p-6 rounded-2xl border border-slate-800">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i class="fa-solid fa-brain text-cyber-blue text-xl"></i>
+                        <h3 class="font-heading font-bold text-lg text-white">Core Competencies</h3>
+                    </div>
+                    <ul class="space-y-3 font-mono text-sm">
+                        <li class="flex items-center justify-between bg-slate-900/50 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-slate-300">Supervised Learning</span>
+                            <span class="text-cyber-blue text-xs">Expert</span>
+                        </li>
+                        <li class="flex items-center justify-between bg-slate-900/50 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-slate-300">Feature Engineering</span>
+                            <span class="text-cyber-blue text-xs">Core</span>
+                        </li>
+                        <li class="flex items-center justify-between bg-slate-900/50 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-slate-300">Data Preprocessing</span>
+                            <span class="text-cyber-blue text-xs">Advanced</span>
+                        </li>
+                        <li class="flex items-center justify-between bg-slate-900/50 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-slate-300">Model Evaluation</span>
+                            <span class="text-cyber-blue text-xs">Advanced</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Category 4: Web Development -->
+                <div class="glass-card p-6 rounded-2xl border border-slate-800">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i class="fa-solid fa-[#f0db4f] fa-laptop-code text-cyber-pink text-xl"></i>
+                        <h3 class="font-heading font-bold text-lg text-white">Web Development</h3>
+                    </div>
+                    <ul class="space-y-3 font-mono text-sm">
+                        <li class="flex items-center justify-between bg-slate-900/50 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-slate-300">HTML5</span>
+                            <span class="text-cyber-pink text-xs">Advanced</span>
+                        </li>
+                        <li class="flex items-center justify-between bg-slate-900/50 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-slate-300">CSS3</span>
+                            <span class="text-cyber-pink text-xs">Advanced</span>
+                        </li>
+                        <li class="flex items-center justify-between bg-slate-900/50 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-slate-300">JavaScript</span>
+                            <span class="text-cyber-pink text-xs">Proficient</span>
+                        </li>
+                        <li class="flex items-center justify-between bg-slate-900/50 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-slate-300">Responsive Web UI</span>
+                            <span class="text-cyber-pink text-xs">Advanced</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Projects Section -->
+    <section id="projects" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-xs font-mono text-cyber-cyan tracking-widest uppercase">Portfolio & Showcase</span>
+                <h2 class="text-3xl sm:text-4xl font-heading font-extrabold text-white mt-2">Key Engineering Projects</h2>
+            </div>
+
+            <!-- Projects Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- Project 1: Car Price Prediction Model -->
+                <div class="glass-card rounded-2xl p-8 border border-slate-800 hover:border-cyber-cyan/50 transition-all group">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="w-12 h-12 rounded-xl bg-cyber-cyan/10 text-cyber-cyan border border-cyber-cyan/30 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-car text-xl"></i>
+                        </div>
+                        <span class="px-3 py-1 rounded-full bg-slate-800 text-cyber-cyan font-mono text-xs border border-slate-700">Machine Learning</span>
+                    </div>
+
+                    <h3 class="text-2xl font-heading font-bold text-white mb-3 group-hover:text-cyber-cyan transition-colors">Car Price Prediction Model</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-6 font-light">
+                        Developed a robust regression model to estimate car prices. Managed the entire end-to-end data pipeline from initial data cleaning and feature selection to detailed model evaluation and metric tuning.
+                    </p>
+
+                    <div class="flex flex-wrap gap-2 font-mono text-xs mb-6">
+                        <span class="px-2.5 py-1 rounded-md bg-slate-900 text-slate-300 border border-slate-800">Python</span>
+                        <span class="px-2.5 py-1 rounded-md bg-slate-900 text-slate-300 border border-slate-800">Scikit-learn</span>
+                        <span class="px-2.5 py-1 rounded-md bg-slate-900 text-slate-300 border border-slate-800">Pandas</span>
+                        <span class="px-2.5 py-1 rounded-md bg-slate-900 text-slate-300 border border-slate-800">Regression</span>
+                    </div>
+                </div>
+
+                <!-- Project 2: Zodiac Sign Classification -->
+                <div class="glass-card rounded-2xl p-8 border border-slate-800 hover:border-cyber-purple/50 transition-all group">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="w-12 h-12 rounded-xl bg-cyber-purple/10 text-cyber-purple border border-cyber-purple/30 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-star text-xl"></i>
+                        </div>
+                        <span class="px-3 py-1 rounded-full bg-slate-800 text-cyber-purple font-mono text-xs border border-slate-700">Classification</span>
+                    </div>
+
+                    <h3 class="text-2xl font-heading font-bold text-white mb-3 group-hover:text-cyber-purple transition-colors">Zodiac Sign Classification</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-6 font-light">
+                        Built a supervised classification model using date of birth data. Applied custom feature engineering technique to accurately categorize and predict astrological attributes.
+                    </p>
+
+                    <div class="flex flex-wrap gap-2 font-mono text-xs mb-6">
+                        <span class="px-2.5 py-1 rounded-md bg-slate-900 text-slate-300 border border-slate-800">Python</span>
+                        <span class="px-2.5 py-1 rounded-md bg-slate-900 text-slate-300 border border-slate-800">Scikit-learn</span>
+                        <span class="px-2.5 py-1 rounded-md bg-slate-900 text-slate-300 border border-slate-800">Feature Engineering</span>
+                    </div>
+                </div>
+
+                <!-- Project 3: Sales Performance Dashboard -->
+                <div class="glass-card rounded-2xl p-8 border border-slate-800 hover:border-cyber-blue/50 transition-all group">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="w-12 h-12 rounded-xl bg-cyber-blue/10 text-cyber-blue border border-cyber-blue/30 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-chart-line text-xl"></i>
+                        </div>
+                        <span class="px-3 py-1 rounded-full bg-slate-800 text-cyber-blue font-mono text-xs border border-slate-700">Data Analytics & BI</span>
+                    </div>
+
+                    <h3 class="text-2xl font-heading font-bold text-white mb-3 group-hover:text-cyber-blue transition-colors">Sales Performance Dashboard</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-6 font-light">
+                        Designed an interactive Power BI dashboard visualizing key business KPIs, regional performance indicators, and monthly trends using dynamic DAX measures and Excel datasets.
+                    </p>
+
+                    <div class="flex flex-wrap gap-2 font-mono text-xs mb-6">
+                        <span class="px-2.5 py-1 rounded-md bg-slate-900 text-slate-300 border border-slate-800">Power BI</span>
+                        <span class="px-2.5 py-1 rounded-md bg-slate-900 text-slate-300 border border-slate-800">DAX</span>
+                        <span class="px-2.5 py-1 rounded-md bg-slate-900 text-slate-300 border border-slate-800">Excel</span>
+                    </div>
+                </div>
+
+                <!-- Project 4: Personal Portfolio Website -->
+                <div class="glass-card rounded-2xl p-8 border border-slate-800 hover:border-cyber-pink/50 transition-all group">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="w-12 h-12 rounded-xl bg-cyber-pink/10 text-cyber-pink border border-cyber-pink/30 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-globe text-xl"></i>
+                        </div>
+                        <span class="px-3 py-1 rounded-full bg-slate-800 text-cyber-pink font-mono text-xs border border-slate-700">Web Engineering</span>
+                    </div>
+
+                    <h3 class="text-2xl font-heading font-bold text-white mb-3 group-hover:text-cyber-pink transition-colors">Personal Portfolio Website</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-6 font-light">
+                        Created a fully responsive personal portfolio to display modern software engineering and machine learning projects with smooth interactivity and sleek visual aesthetics.
+                    </p>
+
+                    <div class="flex flex-wrap gap-2 font-mono text-xs mb-6">
+                        <span class="px-2.5 py-1 rounded-md bg-slate-900 text-slate-300 border border-slate-800">HTML5</span>
+                        <span class="px-2.5 py-1 rounded-md bg-slate-900 text-slate-300 border border-slate-800">CSS3</span>
+                        <span class="px-2.5 py-1 rounded-md bg-slate-900 text-slate-300 border border-slate-800">JavaScript</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Education & Certifications Section -->
+    <section id="education" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-xs font-mono text-cyber-cyan tracking-widest uppercase">Academic Background</span>
+                <h2 class="text-3xl sm:text-4xl font-heading font-extrabold text-white mt-2">Education & Certifications</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <!-- Education Item -->
+                <div class="glass-card p-8 rounded-2xl border border-slate-800 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-cyber-cyan to-cyber-blue"></div>
+                    <div class="text-xs font-mono text-cyber-cyan mb-2">2020 - 2024</div>
+                    <h3 class="text-2xl font-heading font-bold text-white">BS in Computer Science</h3>
+                    <p class="text-slate-400 text-sm font-medium mt-1">University of Azad Jammu & Kashmir</p>
+                    <p class="text-slate-300 text-xs mt-4 leading-relaxed font-light">
+                        Completed a comprehensive computer science degree with core focus on algorithms, machine learning fundamentals, software design, and database systems.
+                    </p>
+                </div>
+
+                <!-- Certification Item -->
+                <div class="glass-card p-8 rounded-2xl border border-slate-800 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-cyber-purple to-cyber-pink"></div>
+                    <div class="text-xs font-mono text-cyber-purple mb-2">Certified Training</div>
+                    <h3 class="text-2xl font-heading font-bold text-white">AI Certification</h3>
+                    <p class="text-slate-400 text-sm font-medium mt-1">Corvit Institute, Muzaffarabad</p>
+                    <p class="text-slate-300 text-xs mt-4 leading-relaxed font-light">
+                        Intensive hands-on certification covering Artificial Intelligence techniques, modern machine learning workflows, model evaluation, and practical deployment.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                
+                <!-- Contact Info -->
+                <div class="lg:col-span-5 space-y-8">
+                    <div>
+                        <span class="text-xs font-mono text-cyber-cyan tracking-widest uppercase">Get In Touch</span>
+                        <h2 class="text-3xl sm:text-4xl font-heading font-extrabold text-white mt-2">Let's Connect</h2>
+                        <p class="text-slate-400 text-sm mt-4 font-light leading-relaxed">
+                            Have an AI initiative, predictive modeling project, or engineering role? Feel free to reach out directly through email, phone, or the contact form.
+                        </p>
+                    </div>
+
+                    <div class="space-y-4 font-mono text-sm">
+                        <div class="glass-card p-4 rounded-xl border border-slate-800 flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-cyber-cyan/10 text-cyber-cyan flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs text-slate-500">Email</div>
+                                <a href="mailto:rajaabuzar13@gmail.com" class="text-white hover:text-cyber-cyan transition-colors">rajaabuzar13@gmail.com</a>
+                            </div>
+                        </div>
+
+                        <div class="glass-card p-4 rounded-xl border border-slate-800 flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-cyber-purple/10 text-cyber-purple flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-phone"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs text-slate-500">Phone</div>
+                                <a href="tel:03111870822" class="text-white hover:text-cyber-purple transition-colors">0311 1870822</a>
+                            </div>
+                        </div>
+
+                        <div class="glass-card p-4 rounded-xl border border-slate-800 flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-cyber-blue/10 text-cyber-blue flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs text-slate-500">Location</div>
+                                <span class="text-white">Muzaffarabad, Pakistan</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="lg:col-span-7">
+                    <form id="contact-form" onsubmit="handleFormSubmit(event)" class="glass-card p-8 rounded-2xl border border-slate-800 space-y-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-mono uppercase text-slate-400 mb-2">Name</label>
+                                <input type="text" required placeholder="John Doe" class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-800 text-white text-sm focus:outline-none focus:border-cyber-cyan transition-colors">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-mono uppercase text-slate-400 mb-2">Email</label>
+                                <input type="email" required placeholder="john@example.com" class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-800 text-white text-sm focus:outline-none focus:border-cyber-cyan transition-colors">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-mono uppercase text-slate-400 mb-2">Subject</label>
+                            <input type="text" required placeholder="AI Project Inquiry" class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-800 text-white text-sm focus:outline-none focus:border-cyber-cyan transition-colors">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-mono uppercase text-slate-400 mb-2">Message</label>
+                            <textarea rows="4" required placeholder="Write your message here..." class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-800 text-white text-sm focus:outline-none focus:border-cyber-cyan transition-colors resize-none"></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full py-4 rounded-xl bg-gradient-to-r from-cyber-cyan via-cyber-blue to-cyber-purple text-slate-950 font-bold text-xs uppercase tracking-widest glow-button flex items-center justify-center gap-2">
+                            <span>Send Message</span>
+                            <i class="fa-solid fa-paper-plane text-xs"></i>
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 bg-cyber-bg border-t border-slate-800/80 text-center text-xs font-mono text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p>© <span id="year"></span> Abuzar. All rights reserved.</p>
+            <p class="text-slate-400">Designed with Three.js WebGL & Tailwind CSS</p>
+        </div>
+    </footer>
+
+    <!-- Interactive Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 translate-y-24 opacity-0 glass-card px-6 py-4 rounded-xl text-white border border-cyber-cyan/50 shadow-2xl flex items-center gap-3 transition-all duration-300 z-50">
+        <i class="fa-solid fa-circle-check text-cyber-cyan text-lg"></i>
+        <span id="toast-message" class="text-sm font-medium">Message sent successfully!</span>
+    </div>
+
+    <!-- Interactive Three.js Background & Page Scripts -->
+    <script>
+        // Set Year in Footer
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Mobile Menu Drawer Logic
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Contact Form Mock Action
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            showToast('Message sent! I will respond promptly.');
+            document.getElementById('contact-form').reset();
+        }
+
+        // Resume Download Simulation
+        function downloadResume() {
+            showToast('Downloading Abuzar_CV_Updated.pdf...');
+        }
+
+        // Toast Alert Manager
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            toastMsg.textContent = message;
+
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3500);
+        }
+
+        // ==========================================
+        // THREE.JS 3D NEURAL NETWORK BACKGROUND
+        // ==========================================
+        window.addEventListener('load', () => {
+            const canvas = document.getElementById('bg-canvas');
+            const scene = new THREE.Scene();
+            
+            // Camera setup
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 400;
+
+            // Renderer setup
+            const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            // Neural Network Nodes (Particles)
+            const particleCount = 180;
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            const velocities = [];
+
+            for (let i = 0; i < particleCount * 3; i += 3) {
+                positions[i] = (Math.random() - 0.5) * 800;     // X
+                positions[i + 1] = (Math.random() - 0.5) * 800; // Y
+                positions[i + 2] = (Math.random() - 0.5) * 600; // Z
+
+                velocities.push({
+                    x: (Math.random() - 0.5) * 0.4,
+                    y: (Math.random() - 0.5) * 0.4,
+                    z: (Math.random() - 0.5) * 0.4
+                });
+            }
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+            // Particle Texture Material
+            const particleMaterial = new THREE.PointsMaterial({
+                color: 0x06b6d4,
+                size: 4,
+                transparent: true,
+                opacity: 0.85
+            });
+
+            const particleSystem = new THREE.Points(geometry, particleMaterial);
+            scene.add(particleSystem);
+
+            // Lines connect nearest neural nodes
+            const lineMaterial = new THREE.LineBasicMaterial({
+                color: 0x3b82f6,
+                transparent: true,
+                opacity: 0.18
+            });
+
+            const lineGeometry = new THREE.BufferGeometry();
+            const lineMesh = new THREE.LineSegments(lineGeometry, lineMaterial);
+            scene.add(lineMesh);
+
+            // Mouse interaction coordinates
+            let mouseX = 0;
+            let mouseY = 0;
+
+            document.addEventListener('mousemove', (event) => {
+                mouseX = (event.clientX - window.innerWidth / 2) * 0.05;
+                mouseY = (event.clientY - window.innerHeight / 2) * 0.05;
+            });
+
+            // Handle Window Resize
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+
+            // Animation Loop
+            function animate() {
+                requestAnimationFrame(animate);
+
+                const pos = particleSystem.geometry.attributes.position.array;
+
+                // Update particle positions
+                for (let i = 0; i < particleCount; i++) {
+                    const i3 = i * 3;
+                    pos[i3] += velocities[i].x;
+                    pos[i3 + 1] += velocities[i].y;
+                    pos[i3 + 2] += velocities[i].z;
+
+                    // Bounce off boundaries
+                    if (pos[i3] < -400 || pos[i3] > 400) velocities[i].x *= -1;
+                    if (pos[i3 + 1] < -400 || pos[i3 + 1] > 400) velocities[i].y *= -1;
+                    if (pos[i3 + 2] < -300 || pos[i3 + 2] > 300) velocities[i].z *= -1;
+                }
+
+                particleSystem.geometry.attributes.position.needsUpdate = true;
+
+                // Build line connection geometry
+                const linePositions = [];
+                const maxDistance = 120;
+
+                for (let i = 0; i < particleCount; i++) {
+                    for (let j = i + 1; j < particleCount; j++) {
+                        const dx = pos[i * 3] - pos[j * 3];
+                        const dy = pos[i * 3 + 1] - pos[j * 3 + 1];
+                        const dz = pos[i * 3 + 2] - pos[j * 3 + 2];
+                        const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+                        if (dist < maxDistance) {
+                            linePositions.push(pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2]);
+                            linePositions.push(pos[j * 3], pos[j * 3 + 1], pos[j * 3 + 2]);
+                        }
+                    }
+                }
+
+                lineMesh.geometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+
+                // Smooth camera rotation based on mouse movement
+                camera.position.x += (mouseX - camera.position.x) * 0.03;
+                camera.position.y += (-mouseY - camera.position.y) * 0.03;
+                camera.lookAt(scene.position);
+
+                renderer.render(scene, camera);
+            }
+
+            // Start 3D Loop
+            animate();
+        });
+    </script>
+</body>
+</html>
